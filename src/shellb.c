@@ -3,7 +3,7 @@
  * |  ShellB   |
  * +-----------+
  *	@author Kinjal Ray
- *	@version 1.0
+ *	@version 1.1
  *	Implementation of a simple Shell
  *
  *	Compile:
@@ -273,34 +273,38 @@ int main(int argc, char **argv)
 
 	cls();
 
-	printf(RED BOLD ">>>> ShellB <<<<"
-		RESET RED "\nA simple shell with basic functions"
-		BOLD GREEN "\nAuthor:"
-		BLUE "Kinjal Ray \n"
+	printf(RED "----------------\n"
+		RED BOLD ">>>> ShellB <<<<\n"
+		RESET RED "----------------\n"
+		BOLD GREEN "Author:"
+		BLUE "Kinjal Ray "
+		RESET BLUE "(kinjalray10@gmail.com)\n"
 		RESET "\n");
 
 	while (1)
 	{
 		if (getcwd(cwd, sizeof(cwd)) != NULL)
-			printf(GREEN BOLD "%s@%s"
+		{
+			sprintf(buf , GREEN BOLD "%s@%s"
 				RESET ":"
 				BLUE BOLD "%s"
 				RESET "=+> ", user, host, cwd);
-		else perror("getcwd failed\n");
+			tmp_in = readline(buf);
+			// Only add non-empty lines to history.
+			if (strlen(tmp_in) != 0)
+			{
+				add_history(tmp_in);
+				strcpy(buf, tmp_in);
+				free(tmp_in);
+			}
+			else
+			{
+				continue;
+			}
+		}
+		else 
+			perror("getcwd failed\n");
 
-		// fgets(buf, 500, stdin);
-		tmp_in = readline("");
-		// Only add non-empty lines to history.
-		if (strlen(tmp_in) != 0)
-		{
-			add_history(tmp_in);
-			strcpy(buf, tmp_in);
-			free(tmp_in);
-		}
-		else
-		{
-			continue;
-		}
 
 		//check if only a simple command needs to be executed or multiple piped commands or other types
 		if (strstr(buf, "||"))
@@ -361,9 +365,9 @@ int main(int argc, char **argv)
 				//clear screen command
 				cls();
 			}
-			/**********************************/
-			/*****	Internal Commands End	*****/
-			/**********************************/
+			/***********************************/
+			/****** Internal Commands End ******/
+			/***********************************/
 
 			else
 			{
